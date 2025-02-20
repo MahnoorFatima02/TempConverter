@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout the code from the repository
-                git 'https://github.com/MahnoorFatima02/TempConverter.git'
+                 git branch: 'main', git 'https://github.com/MahnoorFatima02/TempConverter.git'
             }
         }
 
