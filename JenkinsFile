@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    environment {
+        MAVEN_HOME = '/opt/homebrew/Cellar/maven/3.9.9/libexec'
+        PATH = "${MAVEN_HOME}/bin:${env.PATH}"
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout the code from the repository
+                git 'https://github.com/MahnoorFatima02/TempConverter.git'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                // Build the project using Maven
+               sh '''
+                                       mvn clean compile
+                                   '''
+            }
+        }
+
+        stage('Test') {
+            steps {
+
+          sh '''
+                                      mvn test
+                                  '''
+            }
+        }
+     stage('Verify') {
+            steps {
+                // Verify the project using Maven
+                sh 'mvn verify'
+            }
+        }
+
+        stage('Code Coverage') {
+            steps {
+                // Generate JaCoCo code coverage report
+                sh 'mvn jacoco:report'
+            }
+            post {
+                always {
+                    // Archive the JaCoCo code coverage report
+                    jacoco execPattern: '**/target/jacoco.exec'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Archive the build artifacts
+            archiveArtifacts artifacts: '**/target/*.jar', allowEmptyArchive: true
+            // Publish JUnit test results
+            junit '**/target/surefire-reports/*.xml'
+        }
+    }
+}
