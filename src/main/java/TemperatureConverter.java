@@ -18,4 +18,8 @@ public class TemperatureConverter {
         return (float) (kel - 273.15);
     }
 
+    public static void main(String[] args){
+        System.out.println("Done docker");
+    }
+
 }
